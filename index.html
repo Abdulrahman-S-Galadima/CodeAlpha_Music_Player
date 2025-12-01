@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* CSS STYLE */
         @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
         * { box-sizing: border-box; }
         body {
@@ -30,70 +29,31 @@
             margin: 100px 0;
             z-index: 10;
         }
-        .img-container {
-            position: relative;
-            width: 110px;
-        }
+        .img-container { position: relative; width: 110px; }
         .img-container img {
-            border-radius: 50%;
-            object-fit: cover;
-            height: 110px;
-            width: 110px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            background-color: #ddd;
+            border-radius: 50%; object-fit: cover; height: 110px; width: 110px;
+            position: absolute; bottom: 0; left: 0; background-color: #ddd;
+            animation: rotate 3s linear infinite; animation-play-state: paused;
         }
-        .navigation {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1;
-        }
-        .action-btn {
-            background-color: #fff;
-            border: 0;
-            color: #dfdbdf;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 10px;
-            margin: 0 20px;
-        }
-        .action-btn-big {
-            color: #cdc2d0;
-            font-size: 30px;
-        }
+        .music-container.play .img-container img { animation-play-state: running; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .navigation { display: flex; align-items: center; justify-content: center; z-index: 1; }
+        .action-btn { background-color: #fff; border: 0; color: #dfdbdf; font-size: 20px; cursor: pointer; padding: 10px; margin: 0 20px; }
+        .action-btn-big { color: #cdc2d0; font-size: 30px; }
         .music-info {
-            background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 15px 15px 0 0;
-            position: absolute;
-            top: 0;
-            left: 20px;
-            width: calc(100% - 40px);
-            padding: 10px 10px 10px 150px;
-            z-index: 0;
+            background-color: rgba(255, 255, 255, 0.5); border-radius: 15px 15px 0 0;
+            position: absolute; top: 0; left: 20px; width: calc(100% - 40px);
+            padding: 10px 10px 10px 150px; opacity: 0; transform: translateY(0%);
+            transition: transform 0.3s ease-in, opacity 0.3s ease-in; z-index: 0;
         }
+        .music-container.play .music-info { opacity: 1; transform: translateY(-100%); }
         .music-info h4 { margin: 0; }
-        .progress-container {
-            background: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px 0;
-            height: 4px;
-            width: 100%;
-        }
-        .progress {
-            background-color: #fe8daa;
-            border-radius: 5px;
-            height: 100%;
-            width: 0%;
-        }
+        .progress-container { background: #fff; border-radius: 5px; cursor: pointer; margin: 10px 0; height: 4px; width: 100%; }
+        .progress { background-color: #fe8daa; border-radius: 5px; height: 100%; width: 0%; transition: width 0.1s linear; }
     </style>
 </head>
 <body>
-
     <h1 style="color: #333;">G-H TECH Player</h1>
-
     <div class="music-container" id="music-container">
         <div class="music-info">
             <h4 id="title">Sunan Waka</h4>
@@ -101,13 +61,10 @@
                 <div class="progress" id="progress"></div>
             </div>
         </div>
-
         <audio src="" id="audio"></audio>
-
         <div class="img-container">
             <img src="" alt="cover" id="cover">
         </div>
-
         <div class="navigation">
             <button id="prev" class="action-btn"><i class="fas fa-backward"></i></button>
             <button id="play" class="action-btn action-btn-big"><i class="fas fa-play"></i></button>
@@ -134,57 +91,47 @@
 
         function loadSong(song) {
             title.innerText = song;
-            audio.src = `songs/${song}.mp3`;
-            cover.src = `images/${song}.jpg`;
+            
+            // GYARA: Wannan yana sa song1 ya zama .m4a, sauran .mp3
+            if (song === 'song1') {
+                audio.src = song + '.m4a';
+            } else {
+                audio.src = song + '.mp3';
+            }
+            
+            // GYARA: Hotuna basa cikin folder
+            cover.src = song + '.jpg';
         }
 
         function playSong() {
             musicContainer.classList.add('play');
             playBtn.querySelector('i.fas').classList.remove('fa-play');
             playBtn.querySelector('i.fas').classList.add('fa-pause');
-
-            // DEBUGGING: Idan waka taki tashi, wannan zai taimaka
-            var playPromise = audio.play();
-
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // Waka ta tashi lafiya
-                })
-                .catch(error => {
-                    // Waka ta ki tashi
-                    alert("Matsala! Ba a ga waka a: " + audio.src + "\n\nKi tabbata folder 'songs' tana tare da 'index.html'");
-                    console.error(error);
-                });
-            }
+            audio.play();
         }
-
         function pauseSong() {
             musicContainer.classList.remove('play');
             playBtn.querySelector('i.fas').classList.add('fa-play');
             playBtn.querySelector('i.fas').classList.remove('fa-pause');
             audio.pause();
         }
-
         function prevSong() {
             songIndex--;
             if (songIndex < 0) { songIndex = songs.length - 1; }
             loadSong(songs[songIndex]);
             playSong();
         }
-
         function nextSong() {
             songIndex++;
             if (songIndex > songs.length - 1) { songIndex = 0; }
             loadSong(songs[songIndex]);
             playSong();
         }
-
         function updateProgress(e) {
             const { duration, currentTime } = e.srcElement;
             const progressPercent = (currentTime / duration) * 100;
             progress.style.width = `${progressPercent}%`;
         }
-
         function setProgress(e) {
             const width = this.clientWidth;
             const clickX = e.offsetX;
@@ -196,7 +143,6 @@
             const isPlaying = musicContainer.classList.contains('play');
             if (isPlaying) { pauseSong(); } else { playSong(); }
         });
-
         prevBtn.addEventListener('click', prevSong);
         nextBtn.addEventListener('click', nextSong);
         audio.addEventListener('timeupdate', updateProgress);
