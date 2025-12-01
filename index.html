@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-H TECH Music Player</title>
+    <title>CodeAlpha Music Player</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -53,7 +53,9 @@
     </style>
 </head>
 <body>
-    <h1 style="color: #333;">G-H TECH Player</h1>
+    
+    <h1 style="color: #333;">CodeAlpha Music Player</h1>
+    
     <div class="music-container" id="music-container">
         <div class="music-info">
             <h4 id="title">Sunan Waka</h4>
@@ -83,7 +85,6 @@
         const title = document.getElementById('title');
         const cover = document.getElementById('cover');
 
-        // SUNAYEN WAKOKI
         const songs = ['song1', 'song2', 'song3'];
         let songIndex = 0;
 
@@ -91,15 +92,11 @@
 
         function loadSong(song) {
             title.innerText = song;
-            
-            // GYARA: Wannan yana sa song1 ya zama .m4a, sauran .mp3
             if (song === 'song1') {
                 audio.src = song + '.m4a';
             } else {
                 audio.src = song + '.mp3';
             }
-            
-            // GYARA: Hotuna basa cikin folder
             cover.src = song + '.jpg';
         }
 
